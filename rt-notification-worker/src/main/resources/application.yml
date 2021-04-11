@@ -1,0 +1,91 @@
+server:
+    port: 8201
+    compression:
+        enabled: true
+        mime-types: application/json
+
+spring:
+    application:
+        name: rt-notification-core
+    cloud:
+        stream:
+            kafka:
+                binder:
+                    autoAddPartitions: true
+                    deserializationExceptionHandler: logAndContinue
+                default:
+                    consumer:
+                        autoCommitOnError: true
+                        enableDlq: true
+            function:
+                definition: notifyEventSourceConsumer;appNotifyEventSourceConsumer;emailNotifyEventSourceConsumer;pushNotifyEventSourceConsumer;smsNotifyEventSourceConsumer;whatsAppNotifyEventSourceConsumer
+            bindings:
+                #Senders
+                app-notify-output:
+                    destination: rt-notification_notify-app
+                    contentType: application/json
+                email-notify-output:
+                    destination: rt-notification_notify-email
+                    contentType: application/json
+                push-notify-output:
+                    destination: rt-notification_notify-push
+                    contentType: application/json
+                sms-notify-output:
+                    destination: rt-notification_notify-sms
+                    contentType: application/json
+                whatsapp-notify-output:
+                    destination: rt-notification_notify-whatsapp
+                    contentType: application/json
+                #Receivers
+                notifyEventSourceConsumer-in-0:
+                    destination: rt-notification_notify
+                    contentType: application/json
+                    group: rt-notification
+                appNotifyEventSourceConsumer-in-0:
+                    destination: rt-notification_notify-app
+                    contentType: application/json
+                    group: rt-notification
+                emailNotifyEventSourceConsumer-in-0:
+                    destination: rt-notification_notify-email
+                    contentType: application/json
+                    group: rt-notification
+                pushNotifyEventSourceConsumer-in-0:
+                    destination: rt-notification_notify-push
+                    contentType: application/json
+                    group: rt-notification
+                smsNotifyEventSourceConsumer-in-0:
+                    destination: rt-notification_notify-sms
+                    contentType: application/json
+                    group: rt-notification
+                whatsappNotifyEventSourceConsumer-in-0:
+                    destination: rt-notification_notify-whatsapp
+                    contentType: application/json
+                    group: rt-notification
+
+rtrancoso:
+    sendgrid:
+        apiKey: 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
+
+feign:
+    client:
+        config:
+            default:
+                loggerLevel: FULL
+
+---
+
+spring:
+    config:
+        activate.on-profile: dev
+        use-legacy-processing: true
+    data:
+        mongodb:
+            uri: mongodb://root:root.123@localhost:27017/rt-notification?authSource=admin&readPreference=primary&ssl=false
+            timeout: 10000
+        rest:
+            max-page-size: 2147483647
+    cloud:
+        stream:
+            kafka:
+                binder:
+                    brokers: "localhost:9092"

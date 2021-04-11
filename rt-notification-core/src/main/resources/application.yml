@@ -1,0 +1,42 @@
+server:
+    port: 8200
+    compression:
+        enabled: true
+        mime-types: application/json
+
+spring:
+    application:
+        name: rt-notification-core
+    cloud:
+        stream:
+            kafka:
+                binder:
+                    autoAddPartitions: true
+                    deserializationExceptionHandler: logAndContinue
+                default:
+                    consumer:
+                        autoCommitOnError: true
+                        enableDlq: true
+            bindings:
+                #Senders
+                notify-output:
+                    destination: rt-notification_notify
+                    contentType: application/json
+
+---
+
+spring:
+    config:
+        activate.on-profile: dev
+        use-legacy-processing: true
+    data:
+        mongodb:
+            uri: mongodb://root:root.123@localhost:27017/rt-notification?authSource=admin&readPreference=primary&ssl=false
+            timeout: 10000
+        rest:
+            max-page-size: 2147483647
+    cloud:
+        stream:
+            kafka:
+                binder:
+                    brokers: "localhost:9092"
