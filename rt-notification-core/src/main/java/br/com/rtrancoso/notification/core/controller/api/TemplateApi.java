@@ -47,5 +47,5 @@ public interface TemplateApi {
         @ApiResponse(code = 404, message = "Resource not found")
     })
     ResponseEntity<?> delete(String id) throws ResourceNotFoundException;
-    
+
 }

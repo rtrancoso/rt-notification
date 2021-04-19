@@ -20,7 +20,7 @@ public class AppNotificationFacade {
 
     public void notify(String notificationId) {
         notificationService.find(notificationId).ifPresent(
-            notification -> templateService.findByRealmAndKey(notification.getRealm(), notification.getTemplateKey()).ifPresent(
+            notification -> templateService.findByKey(notification.getTemplateKey()).ifPresent(
                 template -> process(notification, template)));
     }
 
@@ -28,6 +28,8 @@ public class AppNotificationFacade {
         try {
             mountNotificationApp(notification, template);
             notificationService.updateApp(notification);
+            sendNotificationApp(notification);
+            notificationService.updateAppSentAt(notification);
         } catch (BusinessException ex) {
             log.error("error on process app notify", ex);
         }
@@ -37,6 +39,10 @@ public class AppNotificationFacade {
         notification.setNotificationApp(NotificationApp.builder().build());
         notification.getNotificationApp().setReceiver(notification.getParams().get("APP_RECEIVER"));
         notification.getNotificationApp().setMessage(templateService.parseAppMessage(template.getTemplateApp(), notification.getParams()));
+    }
+
+    private void sendNotificationApp(Notification notification) {
+        log.info("sending a notification app {}", notification.getId());
     }
 
 }

@@ -24,9 +24,11 @@ public class InvalidNotification {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    private String realmId;
+    private String realm;
 
-    private String systemId;
+    private String system;
+
+    private String templateKey;
 
     private List<Notification.Channel> channels;
 

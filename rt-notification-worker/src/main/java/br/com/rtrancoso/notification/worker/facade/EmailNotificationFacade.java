@@ -22,7 +22,8 @@ public class EmailNotificationFacade {
 
     public void notify(String notificationId) {
         notificationService.find(notificationId).ifPresent(
-            notification -> templateService.findByRealmAndKey(notification.getRealm(), notification.getTemplateKey()).ifPresent(template -> process(notification, template)));
+            notification -> templateService.findByKey(notification.getTemplateKey()).ifPresent(
+                template -> process(notification, template)));
     }
 
     private void process(Notification notification, Template template) {

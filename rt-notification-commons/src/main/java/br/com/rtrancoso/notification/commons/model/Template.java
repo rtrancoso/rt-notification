@@ -8,12 +8,10 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 @Data
 @Builder
@@ -30,25 +28,18 @@ public class Template {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    private String realm;
-
     private String key;
 
     private String name;
 
-    @Valid
     private TemplateApp templateApp;
 
-    @Valid
     private TemplateEmail templateEmail;
 
-    @Valid
     private TemplatePush templatePush;
 
-    @Valid
     private TemplateSms templateSms;
 
-    @Valid
     private TemplateWhatsApp templateWhatsApp;
 
     private Status status;
@@ -68,7 +59,7 @@ public class Template {
         templates.add(templatePush);
         templates.add(templateSms);
         templates.add(templateWhatsApp);
-        return Stream.ofNullable(templates).anyMatch(Objects::nonNull);
+        return templates.stream().anyMatch(Objects::nonNull);
     }
 
     public enum Status {

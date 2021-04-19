@@ -10,16 +10,12 @@ import br.com.rtrancoso.springboot.base.exception.BusinessException;
 import br.com.rtrancoso.springboot.base.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Service
-@Validated
 @RequiredArgsConstructor
 public class TemplateService {
 
@@ -36,13 +32,13 @@ public class TemplateService {
         return templateRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Template create(@NotNull Template template) throws BusinessException {
+    public Template create(Template template) throws BusinessException {
         template.setStatus(Template.Status.ACTIVE);
         validate(template);
         return templateRepository.save(template);
     }
 
-    public Template update(String id, @NotNull Template template) throws ResourceNotFoundException, BusinessException {
+    public Template update(String id, Template template) throws ResourceNotFoundException, BusinessException {
         Template templateOnDatabase = find(id);
 
         templateMapper.prepareUpdate(template, templateOnDatabase);
@@ -57,7 +53,7 @@ public class TemplateService {
         trashTemplateRepository.save(TrashTemplate.builder().template(templateOnDatabase).build());
     }
 
-    private void validate(@Valid Template template) throws BusinessException {
+    private void validate(Template template) throws BusinessException {
         List<ExceptionCode> errors = new ArrayList<>();
 
         validateSameKey(template, errors);
@@ -77,9 +73,9 @@ public class TemplateService {
     private void validateSameKey(Template template, List<ExceptionCode> errors) {
         Template templateWithSameKey;
         if (Objects.isNull(template.getId())) {
-            templateWithSameKey = templateRepository.findByRealmAndKey(template.getRealm(), template.getKey()).orElse(null);
+            templateWithSameKey = templateRepository.findByKey(template.getKey()).orElse(null);
         } else {
-            templateWithSameKey = templateRepository.findByRealmAndKeyAndIdNot(template.getRealm(), template.getKey(), template.getId()).orElse(null);
+            templateWithSameKey = templateRepository.findByKeyAndIdNot(template.getKey(), template.getId()).orElse(null);
         }
 
         if (!Objects.isNull(templateWithSameKey)) {
@@ -90,10 +86,9 @@ public class TemplateService {
     private void validateSameName(Template template, List<ExceptionCode> errors) {
         Template templateWithSameName;
         if (Objects.isNull(template.getId())) {
-            templateWithSameName = templateRepository.findByRealmAndName(template.getRealm(), template.getName()).orElse(null);
+            templateWithSameName = templateRepository.findByName(template.getName()).orElse(null);
         } else {
-            templateWithSameName = templateRepository.findByRealmAndNameAndIdNot(template.getRealm(), template.getName(), template.getId()).orElse(
-                null);
+            templateWithSameName = templateRepository.findByNameAndIdNot(template.getName(), template.getId()).orElse(null);
         }
 
         if (!Objects.isNull(templateWithSameName)) {
@@ -111,11 +106,9 @@ public class TemplateService {
         if (Objects.nonNull(template.getTemplateApp())) {
             Template templateWithSameAppMessage;
             if (Objects.isNull(template.getId())) {
-                templateWithSameAppMessage = templateRepository.findByRealmAndTemplateAppMessage(template.getRealm(),
-                    template.getTemplateApp().getMessage()).orElse(null);
+                templateWithSameAppMessage = templateRepository.findByTemplateAppMessage(template.getTemplateApp().getMessage()).orElse(null);
             } else {
-                templateWithSameAppMessage = templateRepository.findByRealmAndTemplateAppMessageAndIdNot(template.getRealm(),
-                    template.getTemplateApp().getMessage(),
+                templateWithSameAppMessage = templateRepository.findByTemplateAppMessageAndIdNot(template.getTemplateApp().getMessage(),
                     template.getId()).orElse(null);
             }
 
@@ -129,12 +122,11 @@ public class TemplateService {
         if (Objects.nonNull(template.getTemplateEmail())) {
             Template templateWithSameEmailTemplateId;
             if (Objects.isNull(template.getId())) {
-                templateWithSameEmailTemplateId = templateRepository.findByRealmAndTemplateEmailTemplateId(template.getRealm(),
+                templateWithSameEmailTemplateId = templateRepository.findByTemplateEmailTemplateId(
                     template.getTemplateEmail().getTemplateId()).orElse(null);
             } else {
-                templateWithSameEmailTemplateId = templateRepository.findByRealmAndTemplateEmailTemplateIdAndIdNot(template.getRealm(),
-                    template.getTemplateEmail().getTemplateId(),
-                    template.getId()).orElse(null);
+                templateWithSameEmailTemplateId = templateRepository.findByTemplateEmailTemplateIdAndIdNot(
+                    template.getTemplateEmail().getTemplateId(), template.getId()).orElse(null);
             }
 
             if (!Objects.isNull(templateWithSameEmailTemplateId)) {
@@ -147,11 +139,9 @@ public class TemplateService {
         if (Objects.nonNull(template.getTemplatePush())) {
             Template templateWithSamePushBody;
             if (Objects.isNull(template.getId())) {
-                templateWithSamePushBody = templateRepository.findByRealmAndTemplatePushBody(template.getRealm(),
-                    template.getTemplatePush().getBody()).orElse(null);
+                templateWithSamePushBody = templateRepository.findByTemplatePushBody(template.getTemplatePush().getBody()).orElse(null);
             } else {
-                templateWithSamePushBody = templateRepository.findByRealmAndTemplatePushBodyAndIdNot(template.getRealm(),
-                    template.getTemplatePush().getBody(),
+                templateWithSamePushBody = templateRepository.findByTemplatePushBodyAndIdNot(template.getTemplatePush().getBody(),
                     template.getId()).orElse(null);
             }
 
@@ -165,11 +155,9 @@ public class TemplateService {
         if (Objects.nonNull(template.getTemplateSms())) {
             Template templateWithSameSmsMessage;
             if (Objects.isNull(template.getId())) {
-                templateWithSameSmsMessage = templateRepository.findByRealmAndTemplateSmsMessage(template.getRealm(),
-                    template.getTemplateSms().getMessage()).orElse(null);
+                templateWithSameSmsMessage = templateRepository.findByTemplateSmsMessage(template.getTemplateSms().getMessage()).orElse(null);
             } else {
-                templateWithSameSmsMessage = templateRepository.findByRealmAndTemplateSmsMessageAndIdNot(template.getRealm(),
-                    template.getTemplateSms().getMessage(),
+                templateWithSameSmsMessage = templateRepository.findByTemplateSmsMessageAndIdNot(template.getTemplateSms().getMessage(),
                     template.getId()).orElse(null);
             }
 
@@ -183,10 +171,10 @@ public class TemplateService {
         if (Objects.nonNull(template.getTemplateWhatsApp())) {
             Template templateWithSameWhatsAppMessage;
             if (Objects.isNull(template.getId())) {
-                templateWithSameWhatsAppMessage = templateRepository.findByRealmAndTemplateWhatsAppMessage(template.getRealm(),
+                templateWithSameWhatsAppMessage = templateRepository.findByTemplateWhatsAppMessage(
                     template.getTemplateWhatsApp().getMessage()).orElse(null);
             } else {
-                templateWithSameWhatsAppMessage = templateRepository.findByRealmAndTemplateWhatsAppMessageAndIdNot(template.getRealm(),
+                templateWithSameWhatsAppMessage = templateRepository.findByTemplateWhatsAppMessageAndIdNot(
                     template.getTemplateWhatsApp().getMessage(), template.getId()).orElse(null);
             }
 
