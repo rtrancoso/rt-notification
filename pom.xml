@@ -27,6 +27,13 @@
         <spring-cloud.version>2020.0.2</spring-cloud.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>MyGet[rtrancoso]</id>
+            <url>https://www.myget.org/F/rtrancoso/maven</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- Spring Boot -->
         <dependency>
