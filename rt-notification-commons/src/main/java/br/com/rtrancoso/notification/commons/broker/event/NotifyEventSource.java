@@ -16,7 +16,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class NotifyEventSource implements EventSource {
 
-    private final String realm;
     private final String templateKey;
     private final List<Notification.Channel> channels;
     private final Map<String, String> params;

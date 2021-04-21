@@ -47,6 +47,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/mapper/*</exclude>
+                        <exclude>**/config/*</exclude>
                         <exclude>**/*Application</exclude>
                     </excludes>
                 </configuration>

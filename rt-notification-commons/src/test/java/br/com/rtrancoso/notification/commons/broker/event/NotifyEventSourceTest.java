@@ -13,7 +13,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class NotifyEventSourceTest {
 
-    private static final String REALM = "REALM";
     private static final String TEMPLATE_KEY = "TEMPLATE_KEY";
     private static final List<Notification.Channel> CHANNELS = List.of(Notification.Channel.APP, Notification.Channel.PUSH);
     private static final Map<String, String> PARAMS = Map.of("PARAM_1", "VALUE_1", "PARAM_2", "VALUE_2");
@@ -22,9 +21,8 @@ class NotifyEventSourceTest {
 
     @Test
     void callAllArgsConstructor_ReturnsNotifyEventSource() {
-        NotifyEventSource notifyEventSource = new NotifyEventSource(REALM, TEMPLATE_KEY, CHANNELS, PARAMS);
+        NotifyEventSource notifyEventSource = new NotifyEventSource(TEMPLATE_KEY, CHANNELS, PARAMS);
 
-        assertNotNull(notifyEventSource.getRealm());
         assertNotNull(notifyEventSource.getTemplateKey());
         assertNotNull(notifyEventSource.getChannels());
         assertNotNull(notifyEventSource.getParams());
@@ -33,13 +31,11 @@ class NotifyEventSourceTest {
     @Test
     void callBuilder_ReturnsNotifyEventSource() {
         NotifyEventSource notifyEventSource = NotifyEventSource.builder()
-            .realm(REALM)
             .templateKey(TEMPLATE_KEY)
             .channels(CHANNELS)
             .params(PARAMS)
             .build();
 
-        assertNotNull(notifyEventSource.getRealm());
         assertNotNull(notifyEventSource.getTemplateKey());
         assertNotNull(notifyEventSource.getChannels());
         assertNotNull(notifyEventSource.getParams());
