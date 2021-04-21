@@ -49,7 +49,7 @@ public class TemplateController implements TemplateApi {
     @Override
     @PutMapping("{id}")
     public ResponseEntity<TemplateOut> update(@PathVariable String id,
-        @Valid @RequestBody TemplateIn templateIn) throws ResourceNotFoundException, BusinessException {
+        @RequestBody TemplateIn templateIn) throws ResourceNotFoundException, BusinessException {
         return ResponseEntity.ok().body(templateFacade.update(id, templateIn));
     }
 

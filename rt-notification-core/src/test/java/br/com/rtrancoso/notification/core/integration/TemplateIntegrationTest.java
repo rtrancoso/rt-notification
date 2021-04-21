@@ -8,6 +8,7 @@ import br.com.rtrancoso.notification.commons.model.TemplatePush;
 import br.com.rtrancoso.notification.commons.model.TemplateSms;
 import br.com.rtrancoso.notification.commons.model.TemplateWhatsApp;
 import br.com.rtrancoso.notification.commons.repository.TemplateRepository;
+import br.com.rtrancoso.notification.commons.repository.TrashTemplateRepository;
 import br.com.rtrancoso.notification.core.dto.TemplateIn;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -21,15 +22,19 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -63,6 +68,9 @@ class TemplateIntegrationTest {
     @MockBean
     private TemplateRepository templateRepository;
 
+    @MockBean
+    private TrashTemplateRepository trashTemplateRepository;
+
     @Test
     void callFindAll_ReturnsOk() throws Exception {
         mockMvc.perform(get("/templates").contentType(MediaType.APPLICATION_JSON))
@@ -72,7 +80,7 @@ class TemplateIntegrationTest {
     }
 
     @Test
-    void callFindById_ReturnsOk() throws Exception {
+    void callFind_ReturnsOk() throws Exception {
         Template template = Template.builder()
             .id(ID)
             .build();
@@ -86,7 +94,7 @@ class TemplateIntegrationTest {
     }
 
     @Test
-    void callFindById_ReturnsNotFound() throws Exception {
+    void callFind_ReturnsNotFound() throws Exception {
         mockMvc.perform(get("/templates/{id}", ID).contentType(MediaType.APPLICATION_JSON))
             .andDo(print())
             .andExpect(status().isNotFound())
@@ -383,6 +391,223 @@ class TemplateIntegrationTest {
             .andExpect(jsonPath("$.errors", hasSize(1)))
             .andExpect(jsonPath("$.errors[0].code").value(ExceptionCode.TEMPLATE_008.getCode()))
             .andExpect(jsonPath("$.errors[0].description").value(ExceptionCode.TEMPLATE_008.getDescription()));
+    }
+
+    @Test
+    void callCreate_WithValidTemplate_ReturnsCreated() throws Exception {
+        TemplateIn templateIn = TemplateIn.builder()
+            .key(KEY)
+            .name(NAME)
+            .templateApp(TemplateApp.builder()
+                .message(MESSAGE)
+                .build())
+            .templateEmail(TemplateEmail.builder()
+                .templateId(EMAIL_TEMPLATE_ID)
+                .templateCategory(EMAIL_TEMPLATE_CATEGORY)
+                .sender(EMAIL_SENDER)
+                .senderName(EMAIL_SENDER_NAME)
+                .build())
+            .templatePush(TemplatePush.builder()
+                .title(PUSH_TITLE)
+                .body(PUSH_BODY)
+                .build())
+            .templateSms(TemplateSms.builder()
+                .message(MESSAGE)
+                .build())
+            .templateWhatsApp(TemplateWhatsApp.builder()
+                .message(MESSAGE)
+                .build())
+            .build();
+
+        Template template = Template.builder()
+            .id(ID)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .key(KEY)
+            .name(NAME)
+            .templateApp(TemplateApp.builder()
+                .message(MESSAGE)
+                .build())
+            .templateEmail(TemplateEmail.builder()
+                .templateId(EMAIL_TEMPLATE_ID)
+                .templateCategory(EMAIL_TEMPLATE_CATEGORY)
+                .sender(EMAIL_SENDER)
+                .senderName(EMAIL_SENDER_NAME)
+                .build())
+            .templatePush(TemplatePush.builder()
+                .title(PUSH_TITLE)
+                .body(PUSH_BODY)
+                .build())
+            .templateSms(TemplateSms.builder()
+                .message(MESSAGE)
+                .build())
+            .templateWhatsApp(TemplateWhatsApp.builder()
+                .message(MESSAGE)
+                .build())
+            .status(Template.Status.ACTIVE)
+            .build();
+
+        when(templateRepository.findByKey(KEY)).thenReturn(Optional.empty());
+        when(templateRepository.findByName(NAME)).thenReturn(Optional.empty());
+        when(templateRepository.findByTemplateAppMessage(MESSAGE)).thenReturn(Optional.empty());
+        when(templateRepository.findByTemplateEmailTemplateId(EMAIL_TEMPLATE_ID)).thenReturn(Optional.empty());
+        when(templateRepository.findByTemplatePushBody(PUSH_BODY)).thenReturn(Optional.empty());
+        when(templateRepository.findByTemplateSmsMessage(MESSAGE)).thenReturn(Optional.empty());
+        when(templateRepository.findByTemplateWhatsAppMessage(MESSAGE)).thenReturn(Optional.empty());
+        when(templateRepository.findByTemplateWhatsAppMessage(MESSAGE)).thenReturn(Optional.empty());
+        when(templateRepository.save(any())).thenReturn(template);
+
+        mockMvc.perform(post("/templates").contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(templateIn)))
+            .andDo(print())
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.id").value(ID))
+            .andExpect(jsonPath("$.created_at").exists())
+            .andExpect(jsonPath("$.updated_at").exists())
+            .andExpect(jsonPath("$.key").value(KEY))
+            .andExpect(jsonPath("$.name").value(NAME))
+            .andExpect(jsonPath("$.template_app.message").value(MESSAGE))
+            .andExpect(jsonPath("$.template_email.template_id").value(EMAIL_TEMPLATE_ID))
+            .andExpect(jsonPath("$.template_email.template_category").value(EMAIL_TEMPLATE_CATEGORY))
+            .andExpect(jsonPath("$.template_email.sender").value(EMAIL_SENDER))
+            .andExpect(jsonPath("$.template_email.sender_name").value(EMAIL_SENDER_NAME))
+            .andExpect(jsonPath("$.template_push.title").value(PUSH_TITLE))
+            .andExpect(jsonPath("$.template_push.body").value(PUSH_BODY))
+            .andExpect(jsonPath("$.template_sms.message").value(MESSAGE))
+            .andExpect(jsonPath("$.template_whats_app.message").value(MESSAGE));
+    }
+
+    @Test
+    void callUpdate_ReturnsOk() throws Exception {
+        TemplateIn templateIn = TemplateIn.builder()
+            .templateEmail(TemplateEmail.builder()
+                .templateId(EMAIL_TEMPLATE_ID)
+                .templateCategory(EMAIL_TEMPLATE_CATEGORY)
+                .sender(EMAIL_SENDER)
+                .senderName(EMAIL_SENDER_NAME)
+                .build())
+            .templatePush(TemplatePush.builder()
+                .title(PUSH_TITLE)
+                .body(PUSH_BODY)
+                .build())
+            .templateSms(TemplateSms.builder()
+                .message(MESSAGE)
+                .build())
+            .templateWhatsApp(TemplateWhatsApp.builder()
+                .message(MESSAGE)
+                .build())
+            .build();
+
+        Template template = Template.builder()
+            .id(ID)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .key(KEY)
+            .name(NAME)
+            .templateApp(TemplateApp.builder()
+                .message(MESSAGE)
+                .build())
+            .status(Template.Status.ACTIVE)
+            .build();
+
+        Template templateFull = Template.builder()
+            .id(ID)
+            .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
+            .key(KEY)
+            .name(NAME)
+            .templateApp(TemplateApp.builder()
+                .message(MESSAGE)
+                .build())
+            .templateEmail(TemplateEmail.builder()
+                .templateId(EMAIL_TEMPLATE_ID)
+                .templateCategory(EMAIL_TEMPLATE_CATEGORY)
+                .sender(EMAIL_SENDER)
+                .senderName(EMAIL_SENDER_NAME)
+                .build())
+            .templatePush(TemplatePush.builder()
+                .title(PUSH_TITLE)
+                .body(PUSH_BODY)
+                .build())
+            .templateSms(TemplateSms.builder()
+                .message(MESSAGE)
+                .build())
+            .templateWhatsApp(TemplateWhatsApp.builder()
+                .message(MESSAGE)
+                .build())
+            .status(Template.Status.ACTIVE)
+            .build();
+
+        when(templateRepository.findById(ID)).thenReturn(Optional.of(template));
+        when(templateRepository.save(any())).thenReturn(templateFull);
+
+        mockMvc.perform(put("/templates/{id}", ID).contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(templateIn)))
+            .andDo(print())
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").value(ID))
+            .andExpect(jsonPath("$.created_at").exists())
+            .andExpect(jsonPath("$.updated_at").exists())
+            .andExpect(jsonPath("$.key").value(KEY))
+            .andExpect(jsonPath("$.name").value(NAME))
+            .andExpect(jsonPath("$.template_app.message").value(MESSAGE))
+            .andExpect(jsonPath("$.template_email.template_id").value(EMAIL_TEMPLATE_ID))
+            .andExpect(jsonPath("$.template_email.template_category").value(EMAIL_TEMPLATE_CATEGORY))
+            .andExpect(jsonPath("$.template_email.sender").value(EMAIL_SENDER))
+            .andExpect(jsonPath("$.template_email.sender_name").value(EMAIL_SENDER_NAME))
+            .andExpect(jsonPath("$.template_push.title").value(PUSH_TITLE))
+            .andExpect(jsonPath("$.template_push.body").value(PUSH_BODY))
+            .andExpect(jsonPath("$.template_sms.message").value(MESSAGE))
+            .andExpect(jsonPath("$.template_whats_app.message").value(MESSAGE));
+    }
+
+    @Test
+    void callUpdate_ReturnsNotFound() throws Exception {
+        TemplateIn templateIn = TemplateIn.builder()
+            .templateEmail(TemplateEmail.builder()
+                .templateId(EMAIL_TEMPLATE_ID)
+                .templateCategory(EMAIL_TEMPLATE_CATEGORY)
+                .sender(EMAIL_SENDER)
+                .senderName(EMAIL_SENDER_NAME)
+                .build())
+            .templatePush(TemplatePush.builder()
+                .title(PUSH_TITLE)
+                .body(PUSH_BODY)
+                .build())
+            .templateSms(TemplateSms.builder()
+                .message(MESSAGE)
+                .build())
+            .templateWhatsApp(TemplateWhatsApp.builder()
+                .message(MESSAGE)
+                .build())
+            .build();
+
+        mockMvc.perform(put("/templates/{id}", ID).contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(templateIn)))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message").value("ResourceNotFoundException"));
+    }
+
+    @Test
+    void callDelete_ReturnsOk() throws Exception {
+        Template template = Template.builder()
+            .id(ID)
+            .build();
+
+        when(templateRepository.findById(ID)).thenReturn(Optional.of(template));
+
+        mockMvc.perform(delete("/templates/{id}", ID).contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void callDelete_ReturnsNotFound() throws Exception {
+        mockMvc.perform(delete("/templates/{id}", ID).contentType(MediaType.APPLICATION_JSON))
+            .andDo(print())
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.message").value("ResourceNotFoundException"));
     }
 
 }
