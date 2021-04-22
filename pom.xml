@@ -29,8 +29,15 @@
 
     <repositories>
         <repository>
-            <id>MyGet[rtrancoso]</id>
+            <id>myget-rtrancoso</id>
             <url>https://www.myget.org/F/rtrancoso/maven</url>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <url>https://repo.spring.io/libs-milestone-local</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
