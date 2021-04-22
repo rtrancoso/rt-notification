@@ -33,6 +33,11 @@
         <sonar.projectKey>rtrancoso_rt-notification</sonar.projectKey>
         <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.coverage.jacoco.xmlReportPaths>${basedir}/${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.exclusions>
+            **/mapper/*,
+            **/config/*,
+            **/*Application.java
+        </sonar.coverage.exclusions>
     </properties>
 
     <repositories>

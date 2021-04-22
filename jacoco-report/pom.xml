@@ -48,7 +48,8 @@
                     <excludes>
                         <exclude>**/mapper/*</exclude>
                         <exclude>**/config/*</exclude>
-                        <exclude>**/*Application</exclude>
+                        <exclude>**/*Application.java</exclude>
+                        <exclude>**/*Application.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
