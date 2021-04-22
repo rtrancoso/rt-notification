@@ -14,7 +14,8 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <java.version>11</java.version>
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <sonar.coverage.jacoco.xmlReportPaths>${basedir}/${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
         <spring-cloud.version>2020.0.2</spring-cloud.version>
     </properties>
 
