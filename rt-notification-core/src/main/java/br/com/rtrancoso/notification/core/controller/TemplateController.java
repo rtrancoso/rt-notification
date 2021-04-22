@@ -42,14 +42,14 @@ public class TemplateController implements TemplateApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<TemplateOut> create(@RequestBody TemplateIn templateIn) throws BusinessException {
+    public ResponseEntity<TemplateOut> create(@Valid @RequestBody TemplateIn templateIn) throws BusinessException {
         return ResponseEntity.status(HttpStatus.CREATED).body(templateFacade.create(templateIn));
     }
 
     @Override
     @PutMapping("{id}")
     public ResponseEntity<TemplateOut> update(@PathVariable String id,
-        @Valid @RequestBody TemplateIn templateIn) throws ResourceNotFoundException, BusinessException {
+        @RequestBody TemplateIn templateIn) throws ResourceNotFoundException, BusinessException {
         return ResponseEntity.ok().body(templateFacade.update(id, templateIn));
     }
 

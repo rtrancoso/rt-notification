@@ -14,7 +14,6 @@ public class NotifyFacade {
 
     public void create(NotifyIn notifyIn) {
         eventProducer.sendMessage(NotifyEventSource.builder()
-            .realm(notifyIn.getRealm())
             .templateKey(notifyIn.getTemplateKey())
             .channels(notifyIn.getChannels())
             .params(notifyIn.getParams())

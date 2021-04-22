@@ -12,7 +12,7 @@ public class SendGridConfig {
     private String apiKey;
 
     @Bean
-    public SendGrid sendGridBean(){
+    public SendGrid sendGridBean() {
         return new SendGrid(apiKey);
     }
 

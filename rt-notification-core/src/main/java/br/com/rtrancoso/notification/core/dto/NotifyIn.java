@@ -18,9 +18,6 @@ import java.util.Map;
 public class NotifyIn {
 
     @NotBlank
-    private String realm;
-
-    @NotBlank
     private String templateKey;
 
     @NotEmpty

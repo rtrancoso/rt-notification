@@ -6,16 +6,13 @@ import br.com.rtrancoso.springboot.base.stream.event.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class EmailNotifyEventSource implements EventSource {
 
-    private String notificationId;
+    private final String notificationId;
 
     @Override
     public EventType getEventType() {

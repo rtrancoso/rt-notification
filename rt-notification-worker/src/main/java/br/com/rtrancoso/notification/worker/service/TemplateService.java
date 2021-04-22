@@ -21,8 +21,8 @@ public class TemplateService {
 
     private final TemplateRepository templateRepository;
 
-    public Optional<Template> findByRealmAndKey(String realm, String key) {
-        return templateRepository.findByRealmAndKey(realm, key);
+    public Optional<Template> findByKey(String key) {
+        return templateRepository.findByKey(key);
     }
 
     public String parseAppMessage(TemplateApp templateApp, Map<String, String> params) {

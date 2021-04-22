@@ -44,9 +44,9 @@ public class NotificationService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public Notification updateAppSentAt(Notification notification) {
+    public void updateAppSentAt(Notification notification) {
         notification.getNotificationApp().setSentAt(LocalDateTime.now());
-        return notificationRepository.save(notification);
+        notificationRepository.save(notification);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

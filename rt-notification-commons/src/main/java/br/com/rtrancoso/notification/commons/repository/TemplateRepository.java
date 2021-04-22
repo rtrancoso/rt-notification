@@ -9,32 +9,32 @@ import java.util.Optional;
 @Repository
 public interface TemplateRepository extends MongoRepository<Template, String> {
 
-    Optional<Template> findByRealmAndKey(String realm, String key);
+    Optional<Template> findByKey(String key);
 
-    Optional<Template> findByRealmAndKeyAndIdNot(String realm, String key, String id);
+    Optional<Template> findByKeyAndIdNot(String key, String id);
 
-    Optional<Template> findByRealmAndName(String realm, String name);
+    Optional<Template> findByName(String name);
 
-    Optional<Template> findByRealmAndNameAndIdNot(String realm, String name, String id);
+    Optional<Template> findByNameAndIdNot(String name, String id);
 
-    Optional<Template> findByRealmAndTemplateAppMessage(String realm, String message);
+    Optional<Template> findByTemplateAppMessage(String message);
 
-    Optional<Template> findByRealmAndTemplateAppMessageAndIdNot(String realm, String message, String id);
+    Optional<Template> findByTemplateAppMessageAndIdNot(String message, String id);
 
-    Optional<Template> findByRealmAndTemplateEmailTemplateId(String realm, String templateId);
+    Optional<Template> findByTemplateEmailTemplateId(String templateId);
 
-    Optional<Template> findByRealmAndTemplateEmailTemplateIdAndIdNot(String realm, String templateId, String id);
+    Optional<Template> findByTemplateEmailTemplateIdAndIdNot(String templateId, String id);
 
-    Optional<Template> findByRealmAndTemplatePushBody(String realm, String body);
+    Optional<Template> findByTemplatePushBody(String body);
 
-    Optional<Template> findByRealmAndTemplatePushBodyAndIdNot(String realm, String body, String id);
+    Optional<Template> findByTemplatePushBodyAndIdNot(String body, String id);
 
-    Optional<Template> findByRealmAndTemplateSmsMessage(String realm, String message);
+    Optional<Template> findByTemplateSmsMessage(String message);
 
-    Optional<Template> findByRealmAndTemplateSmsMessageAndIdNot(String realm, String message, String id);
+    Optional<Template> findByTemplateSmsMessageAndIdNot(String message, String id);
 
-    Optional<Template> findByRealmAndTemplateWhatsAppMessage(String realm, String message);
+    Optional<Template> findByTemplateWhatsAppMessage(String message);
 
-    Optional<Template> findByRealmAndTemplateWhatsAppMessageAndIdNot(String realm, String message, String id);
+    Optional<Template> findByTemplateWhatsAppMessageAndIdNot(String message, String id);
 
 }

@@ -7,21 +7,18 @@ import br.com.rtrancoso.springboot.base.stream.event.EventType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class NotifyEventSource implements EventSource {
 
-    private String realm;
-    private String templateKey;
-    private List<Notification.Channel> channels;
-    private Map<String, String> params;
+    private final String templateKey;
+    private final List<Notification.Channel> channels;
+    private final Map<String, String> params;
 
     @Override
     public EventType getEventType() {
