@@ -10,8 +10,8 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <name>rt-notification-jacoco-report</name>
-    <artifactId>rt-notification-jacoco-report</artifactId>
+    <name>jacoco-report</name>
+    <artifactId>jacoco-report</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>

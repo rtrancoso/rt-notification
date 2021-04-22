@@ -12,9 +12,9 @@
     </parent>
 
     <modules>
+        <module>jacoco-report</module>
         <module>rt-notification-commons</module>
         <module>rt-notification-core</module>
-        <module>rt-notification-jacoco-report</module>
         <module>rt-notification-worker</module>
     </modules>
 
@@ -27,9 +27,12 @@
         <java.version>11</java.version>
         <spring-cloud.version>2020.0.2</spring-cloud.version>
 
-        <sonar.projectKey>rtrancoso_rt-notification</sonar.projectKey>
-        <sonar.organization>rtrancoso</sonar.organization>
+        <aggregate.report.dir>../jacoco-report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>rtrancoso</sonar.organization>
+        <sonar.projectKey>rtrancoso_rt-notification</sonar.projectKey>
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
+        <sonar.coverage.jacoco.xmlReportPaths>${basedir}/${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <repositories>
